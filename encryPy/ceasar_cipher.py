@@ -1,13 +1,11 @@
 # Author: Prosper Chuks
 # License: MIT
 
-import string
-
 
 def __init__(self) -> None:
-        self.KEY = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    self.KEY = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
-def encrypt(self, message, shift=0) -> string:
+def encrypt(self, message, shift=0) -> str:
 
     '''
     This function encrypts the provided message.
@@ -40,15 +38,27 @@ def encrypt(self, message, shift=0) -> string:
 
 def brute_force(self, message) -> None:
 
-        for key in range(len(self.KEY)):
-            decrypted_message = ''
-            for symbol in message:
-                if symbol in self.KEY:
-                    num = self.KEY.find(symbol)
-                    num -= key
-                    if num < 0:
-                        num += len(self.KEY)
-                    decrypted_message += self.KEY[num]
-                else:
-                    decrypted_message += symbol
-                    print('Brute key #%s: %s' % (key, decrypted_message))
+    '''
+    This function decrypts a ciphered/encrypted message using a brute-force technique.
+
+    Example
+    -------
+    >>> import encrypy.ceasar_cipher as cp
+    >>> encrypted_data = cp.decrypt(message)
+
+    message: str, default = ''
+        Encrypted Data.
+    '''
+
+    for key in range(len(self.KEY)):
+        decrypted_message = ''
+        for symbol in message:
+            if symbol in self.KEY:
+                num = self.KEY.find(symbol)
+                num -= key
+                if num < 0:
+                    num += len(self.KEY)
+                decrypted_message += self.KEY[num]
+            else:
+                decrypted_message += symbol
+                print('Brute key #%s: %s' % (key, decrypted_message))
