@@ -23,7 +23,8 @@ def encode(self, key, message)->str:
                 continue
     return self.ciphertext
 
-def encrypt(self, key=0, message='')->str:
+
+def encrypt(self, key, message) -> str:
 
     '''
     This function encrypts the provided message.
@@ -31,10 +32,11 @@ def encrypt(self, key=0, message='')->str:
     Example
     -------
     >>> import encrypy.transposition_cipher as tp
-    >>> encrypted_data = tp.encrypt(key, message)
+    >>> encrypted_data = tp.encrypt(key='TESGIN', message='Encrypt Python')
 
-    key: int, default = 0
-    Specifies the order in which to arrange the columns.
+    key: str, default = ''
+    Specifies the order in which to arrange the columns. This parameter 
+        cannot take more than 8 chars. Characters must be unique.
 
     message: str, default = ''
         Data to be encrypted.
@@ -42,16 +44,31 @@ def encrypt(self, key=0, message='')->str:
     Returns:
         string
     '''
+    
+    self.cipher = ''
+    self.key_index = 0
+    self.message_length = float(len(message))
+    self.message_list = list(message)
+    self.key_list = sorted(list(key))
 
-    self.ciphertext = [''] * key
-    for col in range(key):
-        self.position = col
-        while self.position < len(message):
-            self.ciphertext[col] += message[self.position]
-            self.position += key
-    return ''.join(self.ciphertext)
+    self.col = len(key)
+    self.row = int(math.ceil(self.message_length / self.col))
 
-def decrypt(self, key, message)->str:
+    fill_null = int((self.row * self.col) - self.message_length)
+    self.message_list.extend('_' * fill_null)
+
+    matrix = [self.message_list[i: i + self.col] 
+            for i in range(0, len(self.message_list), self.col)]
+
+    for _ in range(self.col):
+        curr_idx = key.index(self.key_list[self.key_index])
+        self.cipher += ''.join([self.row[curr_idx] 
+                        for self.row in matrix])
+        self.key_index += 1
+
+    return self.cipher
+        
+def decrypt(self, key, cipher) -> str:
 
     '''
     This function decrypts the provided encrypted message.
@@ -59,9 +76,9 @@ def decrypt(self, key, message)->str:
     Example
     -------
     >>> import encrypy.transposition_cipher as tp
-    >>> encrypted_data = tp.decrypt(key, message)
+    >>> text = tp.decrypt(key='TESGIN', message='Encrypt Python')
 
-    key: int, default = 0
+    key: str, default = ''
     Specifies the order in which to arrange the columns.
 
     message: str, default = ''
@@ -69,16 +86,44 @@ def decrypt(self, key, message)->str:
 
     Returns:
         string
-    '''
 
-    numOfColumns = math.ceil(len(message) / key)
-    numOfShadedBoxes = (numOfColumns * key) - len(message)
-    decrypted_message = float() * numOfColumns
-    col=0;row=0
-    for symbol in message:
-        decrypted_message[col] += symbol
-        col += 1
-        if col == numOfColumns or col == numOfColumns-1 & row >= key - numOfShadedBoxes:
-            col = 0
-            row += 1
-    return ''.join(decrypted_message)
+    Warnings
+    --------
+    -  ``decrypt(key)`` parameter must match with ``encrypt(key)``.
+    '''
+    
+    self.message = ''
+    self.key_index = 0
+    self.message_index = 0
+    self.message_length = float(len(cipher))
+    self.message_list = list(cipher)
+
+    self.col = len(key)
+    self.row = int(math.ceil(self.message_length / self.col))
+    self.key_list = sorted(list(key))
+
+    dec_cipher = []
+    for _ in range(self.row):
+        dec_cipher += [[None] * self.col]
+
+    for _ in range(self.col):
+        curr_idx = key.index(self.key_list[self.key_index])
+
+        for j in range(self.row):
+            dec_cipher[j][curr_idx] = self.message_list[self.message_index]
+            self.message_index += 1
+        self.key_index += 1
+
+    try:
+        self.message = ''.join(sum(dec_cipher, []))
+    except TypeError:
+        raise TypeError("This program cannot",
+                        "handle repeating words.")
+
+    null_count = self.message.count('_')
+
+    if null_count > 0:
+        return self.message[: -null_count]
+
+    return self.message
+
