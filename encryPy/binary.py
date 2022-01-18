@@ -19,6 +19,26 @@ class base:
 
     def encode(self, path: str=None, dataframe: pd.DataFrame=None) -> pd.DataFrame:
 
+        '''
+        This function encodes the provided binary dataset.
+
+        Example
+        -------
+        >>> from encrypy.binary import base
+        >>> encoded_data = base.encode(path, dataframe)
+
+        path: str, default = None
+            Path parameter should hold the path to the dataset.
+
+        or
+
+        dataframe: pd.DataFrame, default = None
+            An initialized pandas DataFrame can be passed as an argument.
+
+        Returns:
+            DataFrame Object
+        '''
+
         if not path==None:
 
             self.bin =  pd.read_csv(path)
@@ -58,6 +78,21 @@ class base:
             return pd.DataFrame(encoded_arr_np, columns=self.bin.columns)
     
     def decode(self, dataframe: pd.DataFrame) -> pd.DataFrame:
+
+        '''
+        This function decodes the encoded dataset.
+
+        Example
+        -------
+        >>> from encrypy.binary import base
+        >>> dataset = base.decode(dataframe)
+
+        dataframe: pd.DataFrame, default = None
+            Initialized pandas DataFrame can be passed as an argument.
+
+        Returns:
+            DataFrame Object
+        '''
 
         self.bin =  pd.DataFrame(dataframe)
         for n_row in range(len(self.bin)):
