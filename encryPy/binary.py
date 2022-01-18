@@ -12,10 +12,32 @@ class base:
         try:
             self.encoded_lst = []
             self.encoded_arr = []
+            self.decoded_lst = []
+            self.demb = []
         except: 
             raise NotImplementedError
 
     def encode(self, path: str=None, dataframe: pd.DataFrame=None) -> pd.DataFrame:
+
+        '''
+        This function encodes the provided binary dataset.
+
+        Example
+        -------
+        >>> from encrypy.binary import base
+        >>> encoded_data = base.encode(path, dataframe)
+
+        path: str, default = None
+            Path parameter should hold the path to the dataset.
+
+        or
+
+        dataframe: pd.DataFrame, default = None
+            An initialized pandas DataFrame can be passed as an argument.
+
+        Returns:
+            DataFrame Object
+        '''
 
         if not path==None:
 
@@ -54,4 +76,39 @@ class base:
                         self.encoded_lst = []
             encoded_arr_np = np.concatenate(self.encoded_arr)
             return pd.DataFrame(encoded_arr_np, columns=self.bin.columns)
+    
+    def decode(self, dataframe: pd.DataFrame) -> pd.DataFrame:
+
+        '''
+        This function decodes the encoded dataset.
+
+        Example
+        -------
+        >>> from encrypy.binary import base
+        >>> dataset = base.decode(dataframe)
+
+        dataframe: pd.DataFrame, default = None
+            Initialized pandas DataFrame can be passed as an argument.
+
+        Returns:
+            DataFrame Object
+        '''
+
+        self.bin =  pd.DataFrame(dataframe)
+        for n_row in range(len(self.bin)):
+            row = self.bin.loc[n_row]
+
+            for k, v in enumerate(row.T):
+                code = base64.b64decode(v)
+                self.decoded_lst.append(code)
+
+                if len(self.decoded_lst) == len(self.bin.columns):
+                    store = {
+                        (int(n_row) for n_row in range(k)): np.array([a for a in self.decoded_lst])
+                        }
+                    self.decoded_arr.append(pd.DataFrame(store).T)
+                    self.decoded_lst = []
         
+        decoded_arr_np = np.concatenate(self.decoded_arr)
+
+        return pd.DataFrame(decoded_arr_np.astype(str), columns=self.bin.columns)
