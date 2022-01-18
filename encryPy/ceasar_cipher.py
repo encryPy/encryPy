@@ -2,63 +2,65 @@
 # License: MIT
 
 
-def __init__(self) -> None:
-    self.KEY = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+class caesar:
 
-def encrypt(self, message, shift=0) -> str:
+    def __init__(self) -> None:
+        self.KEY = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
-    '''
-    This function encrypts the provided message.
+    def encrypt(self, message, shift=0) -> str:
 
-    Example
-    -------
-    >>> import encrypy.ceasar_cipher as cp
-    >>> encrypted_data = cp.encrypt(message, shift)
+        '''
+        This function encrypts the provided message.
 
-    message: str, default = ''
-        Data to be encrypted.
+        Example
+        -------
+        >>> from encrypy.ceasar_cipher import caesar
+        >>> encrypted_data = caesar.encrypt(message, shift)
 
-    shift: int, default = 0
-        Determines the length at which each letter of the message is shifted.
+        message: str,
+            Data to be encrypted.
 
-    Returns:
-        string
-    '''
+        shift: int, default = 0
+            Determines the length at which each letter of the message is shifted.
 
-    self.result = ''
+        Returns:
+            string
+        '''
 
-    for c in range(len(message)):
-        self.char = message[c]
+        self.result = ''
 
-        if self.char.isupper():
-            self.result += chr(ord(self.char) + shift - 65 % 26 + 65)
-        else:
-            self.result += chr(ord(self.char) + shift - 97 % 26 + 97)
-    return self.result
+        for c in range(len(message)):
+            self.char = message[c]
 
-def brute_force(self, message) -> None:
-
-    '''
-    This function decrypts a ciphered/encrypted message using a brute-force technique.
-
-    Example
-    -------
-    >>> import encrypy.ceasar_cipher as cp
-    >>> encrypted_data = cp.decrypt(message)
-
-    message: str, default = ''
-        Encrypted Data.
-    '''
-
-    for key in range(len(self.KEY)):
-        decrypted_message = ''
-        for symbol in message:
-            if symbol in self.KEY:
-                num = self.KEY.find(symbol)
-                num -= key
-                if num < 0:
-                    num += len(self.KEY)
-                decrypted_message += self.KEY[num]
+            if self.char.isupper():
+                self.result += chr(ord(self.char) + shift - 65 % 26 + 65)
             else:
-                decrypted_message += symbol
-                print('Brute key #%s: %s' % (key, decrypted_message))
+                self.result += chr(ord(self.char) + shift - 97 % 26 + 97)
+        return self.result
+
+    def brute_force(self, message) -> None:
+
+        '''
+        This function decrypts a ciphered/encrypted message using a brute-force technique.
+
+        Example
+        -------
+        >>> from encrypy.ceasar_cipher import caesar
+        >>> encrypted_data = caesar.brute_force(message)
+
+        message: str,
+            Encrypted Data.
+        '''
+
+        for key in range(len(self.KEY)):
+            decrypted_message = ''
+            for symbol in message:
+                if symbol in self.KEY:
+                    num = self.KEY.find(symbol)
+                    num -= key
+                    if num < 0:
+                        num += len(self.KEY)
+                    decrypted_message += self.KEY[num]
+                else:
+                    decrypted_message += symbol
+                    print('Brute key #%s: %s' % (key, decrypted_message))
