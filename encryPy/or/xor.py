@@ -12,7 +12,7 @@ def xor():
 def _xor_process(data, key) -> Any:
     
     '''
-    This methos is a 2-way processor
+    This method is a 2-way processor
     '''
     
     data_len = len(data)
